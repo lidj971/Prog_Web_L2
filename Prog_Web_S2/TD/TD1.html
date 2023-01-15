@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "UTF 8"/>
+    <title>Exercice 1</title>
+</head>
+<script>
+    var i = 1;
+    function Inc()
+    {
+        let b = document.createElement('div'); 
+        let c = document.createTextNode(i);
+        b.appendChild(c);
+        i++;
+        document.querySelector('body').appendChild(b);
+    };
+</script>
+<body onclick="Inc()">
+    Exercice 1
+    <div><span>bonjour</span></div>
+    <div></div>
+</body>    
+</html>
+
