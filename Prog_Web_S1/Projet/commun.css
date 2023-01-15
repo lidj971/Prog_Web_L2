@@ -1,0 +1,137 @@
+
+/* Organisation du body */
+body{
+    background-image: url("images/bg01.jpg");
+    margin:auto;
+}
+
+/* FIN Organisation du body */
+
+/*--- Header ---*/
+header {
+    display: flex;
+    justify-content: space-between;
+    background-image: url("images/bg02.jpg");
+}
+header div {padding-left:1em;}
+header div {width:60%;max-width:900px;}
+header h1 {}
+/*--- FIN Header ---*/
+
+
+/*--- nav ---*/
+nav a {
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	flex:auto;
+
+  /* a completer */
+	text-decoration: none;
+  	text-transform: capitalize; 
+  	font-variant: small-caps;
+}
+/*--- FIN nav ---*/
+
+/*--- Article ---*/
+article section {
+	background-color:#EFF2FB;
+	padding: 0.1em 0.3em 0.1em 0.3em;
+	border-radius: 20px;
+}
+article section h1{
+	color:#FFFFFF;
+	padding:0.1em;
+	margin-left:0.1em;
+	padding-left:0.7em;
+  	word-wrap:break-word;
+	background-color:#0B0B3B;
+	
+
+  /* A compléter */
+  	text-transform: capitalize; 
+ 	font-variant: small-caps;
+	max-width: fit-content;
+}
+
+
+article section h2{
+	display:flex;
+	justify-content:space-between;
+	margin-right:0.5em;
+	color:#0040FF;
+	font-weight:bold;
+	font-size:1.1em;
+}
+article section h2 + p{
+	font-size:1.1em;
+	font-weight:bold;
+}
+article a {text-decoration:none;color:#09F;}
+.date
+{
+    background-color:#09F;
+    color:#FFF;
+    border-radius: 7px;
+    font-size:18px;
+    padding-left : 7px;
+    padding-right : 7px;
+}
+#lang ul{
+	display:flex;
+	flex-wrap:wrap;
+	justify-content:space-around;
+}
+#lang li{
+	width: 45%;
+	min-width:80px;
+	list-style-type: square;
+}
+article section{
+	margin-bottom:8px;
+}
+
+/*--- Aside ---*/
+aside a[title]
+{
+	display:flex;
+	justify-content:center;
+}
+aside
+{
+	background-color: #FAFAFA;
+	border-radius: 2px;
+}
+
+aside *
+{
+	margin-left:0.5em;
+}
+
+#reseau_sociaux{
+	display: flex;
+	flex-wrap:wrap;
+	list-style-type: none;
+	align-content:center;
+	padding:0px;
+	margin:0px;
+}
+
+footer {
+    display:flex;
+    justify-content:space-around;
+    background: #14141f;
+    background: #0a0a10;
+    color:#a6a6a6;
+}
+footer a{
+    color:#a6a6a6;
+    text-decoration:none;
+}
+footer ul{
+    list-style-type: none;
+    padding-left:0;
+}
+  /* CC Test New design*/
+nav {background-color: #222222;}
+nav a{}

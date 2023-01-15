@@ -1,0 +1,13 @@
+#conteneur
+{
+border: solid 1px;
+height: 500px;
+display:flex;
+justify-content: space-between;
+align-items: center;
+}
+div div
+{
+width: 25%;
+transform:rotate(90deg)
+}

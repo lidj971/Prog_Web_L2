@@ -1,0 +1,71 @@
+header, footer,nav {width: 80%;}
+article {width: 68%;}
+aside {	width: 12%;}
+
+body{
+	display:flex;
+	flex-wrap:wrap;
+	justify-content: center;
+}
+header h1{font-size:150%;}
+
+nav
+{
+	height:3em;
+	margin:auto;
+	display:flex;
+	flex-direction:row;
+	/* A donner au etudiants*/
+    background: #222222; /* Old browsers */
+    background: linear-gradient(to top, #000000 0%, #222222 50%, #3c3c3c 51%, #393939 78%, #888888 100%);
+}
+nav a {
+ font-size:1.2em;
+ color:white;
+}
+nav a:hover{
+	background-color:#5882FA;
+    background: #1275ae; /* Old browsers */
+    background: linear-gradient(to top, #0b4669 0%, #1275ae 50%, #1794dc 51%, #1691d8 78%, #98d2f4 100%);
+	transition:background-color 2s linear;
+	color:black;
+	transition:color 1s linear;
+}
+
+
+article{
+	display:flex;
+	flex-direction:row;
+	flex-wrap:wrap;
+	justify-content:space-between;
+}
+
+article section {
+	width:48%;
+}
+
+.notopradius {
+	border-top-left-radius:0px;
+	border-top-right-radius:0px;
+}
+
+article section h1{	width:50%;}
+
+header img
+{
+	width: 200px;
+	height: auto;
+}
+
+#backToTop{display:none}
+
+aside {margin-bottom:8px;}
+
+
+
+@media (max-width: 1200px){
+    article section {
+        width: 100%;
+    }
+}
+

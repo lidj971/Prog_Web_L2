@@ -1,0 +1,57 @@
+/*--- Article ---*/
+article section {
+	background-color:#EFF2FB;
+	padding: 0.1em 0.3em 0.1em 0.3em;
+	border-radius: 20px;
+}
+article section h1{
+	color:#FFFFFF;
+	padding:0.1em;
+	margin-left:0.1em;
+	padding-left:0.7em;
+  	word-wrap:break-word;
+	  background-color:#0B0B3B;
+
+  /* A compléter */
+  	text-transform: capitalize; 
+ 	font-variant: small-caps;
+	max-width: fit-content;
+}
+
+
+
+article section h2{
+	display:flex;
+	justify-content:space-between;
+	margin-right:0.5em;
+	color:#0040FF;
+	font-weight:bold;
+	font-size:1.1em;
+}
+article section h2 + p{
+	font-size:1.1em;
+	font-weight:bold;
+}
+article a {text-decoration:none;color:#09F;}
+.date
+{
+    background-color:#09F;
+    color:#FFF;
+    border-radius: 7px;
+    font-size:18px;
+    padding-left : 7px;
+    padding-right : 7px;
+}
+#lang ul{
+	display:flex;
+	flex-wrap:wrap;
+	justify-content:space-around;
+}
+#lang li{
+	width: 45%;
+	min-width:80px;
+	list-style-type: square;
+}
+article section{
+	margin-bottom:8px;
+}
