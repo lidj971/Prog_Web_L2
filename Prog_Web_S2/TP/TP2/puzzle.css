@@ -1,0 +1,77 @@
+/*
+CSS | Activite 1 - Puzzle
+--------------------------
+@date: 27/01/2020;
+@author: .....;
+*/
+
+.ball{
+	width: 5px;
+	height: 5px;
+	padding: 10px;
+	background-color: white;
+	margin: 5px;
+	border: 1px solid #000;
+	display: block;
+	cursor: pointer;
+	border-radius: 50%;
+}
+
+.ball:hover{
+	width: 10px;
+	height: 10px;
+	border: none;
+}
+
+.red{
+	background-color: #dd1313;
+}
+
+.blue{
+	background-color: #007bff;
+}
+
+.orange{
+	background-color: #ff880a;
+}
+
+.green{
+	background-color: #4da44b;
+}
+
+.yellow{
+	background-color: #ffcc00;
+}
+
+.purple{
+	background-color: #974b91;
+}
+
+.plateau{
+	padding: 5px;
+	border: 2px solid #000;
+	background-color: white;
+	display: flex;
+	width: 225px;
+	height: 225px;
+	margin: auto;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 10px;
+	border-radius: 10px;
+}
+
+#palette{
+	font-size: 16pt;
+	padding: 5px;
+	font-weight: bold;
+	border: 1px solid #000;
+	border-radius: 10px;
+	display: flex;
+	direction: row;
+	width: 320px;
+	justify-content: center;
+	align-items: center;
+}
