@@ -91,22 +91,110 @@ function touch(id){
 	{
 		if(pions[i].className == "pion")
 		{
-			console.log(current_player);
+			//console.log(current_player);
 			pions[i].className = "pion playing j" + current_player;
 			found = true;
-			var win = false;
-			while(!win)
+
+			let consec = 0;
+			let maxConsec = 0; 
+
+			//line
+			let lineStart = i - col;
+			for(let j = lineStart;j < lineStart + 7;j++)
 			{
-				for(let i = -3;i < 5;i++)
+				if(pions[j].className == "pion playing j" + current_player)
 				{
-					for(let j = i;j < 5;j++)
+					consec++;
+					if(consec > maxConsec)
 					{
-						if(pions[j].className != "pion playing j" + current_player)
-						{
-							
-						}
+						maxConsec = consec;
 					}
+				}else
+				{
+					consec = 0;
 				}
+			}
+
+			//col
+			for(let j = col;j <= col + 42;j += 7)
+			{
+				if(pions[j].className == "pion playing j" + current_player)
+				{
+					consec++;
+					if(consec > maxConsec)
+					{
+						maxConsec = consec;
+					}
+				}else
+				{
+					consec = 0;
+				}
+			}
+
+			//diag right-left
+			let distance = (8 * (i - lineStart));
+			if(distance > lineStart)
+			{
+				distance = lineStart;
+				distance += Math.abs((i-lineStart) - i)/7;
+			}
+			let diagStart = i - distance;
+			distance = (42 - lineStart) +((i + (42 - lineStart)) - i)/7;
+			let lineEnd = lineStart + 6;
+			if(i + distance > 48)
+			{
+				distance = lineEnd - i + (lineEnd - i) * 7;
+			}
+			let diagEnd = i + distance;
+			for(let j = diagStart;j <= diagEnd;j++)
+			{
+				if(pions[j].className == "pion playing j" + current_player)
+				{
+					consec++;
+					if(consec > maxConsec)
+					{
+						maxConsec = consec;
+					}
+				}else
+				{
+					consec = 0;
+				}
+				j += 7;
+			}
+			
+			//diag left-right
+			distance = lineEnd - i - (lineEnd - i) * 7;
+			if(i + distance < 0)
+			{
+				distance = -lineStart + lineStart / 7;
+			}
+			diagStart = i + distance;
+
+			distance = lineStart - i - (lineStart - i) * 7;
+			if(i + distance > 48)
+			{
+				distance = 42 - lineStart - (42 - lineStart)/7;
+			}
+			diagEnd = i + distance;
+			for(let j = diagStart;j <= diagEnd;j--)
+			{
+				if(pions[j].className == "pion playing j" + current_player)
+				{
+					consec++;
+					if(consec > maxConsec)
+					{
+						maxConsec = consec;
+					}
+				}else
+				{
+					consec = 0;
+				}
+				j += 7;
+			}
+
+			if(maxConsec >= 4)
+			{
+				console.log("Win");
 			}
 		}
 		i -= 7;
