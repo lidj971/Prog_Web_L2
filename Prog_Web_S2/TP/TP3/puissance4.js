@@ -97,6 +97,8 @@ function touch(id){
 
 			let consec = 0;
 			let maxConsec = 0; 
+			
+			//TO DO faire une foncion check pour chacun qui renvoie la liste des coordonnes du plus grand consectif
 
 			//line
 			let lineStart = i - col;
