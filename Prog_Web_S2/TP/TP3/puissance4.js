@@ -75,6 +75,123 @@ function ins(player) {
 
 
 
+function checkLine(i,col,pions)
+{
+	let maxConsec = [];
+	let consec = [];
+	let start = i - col;
+	for(let j = start;j < start + 7;j++)
+	{
+		if(pions[j].className == "pion playing j" + current_player)
+		{
+			consec.push(j);
+			if(consec.length > maxConsec.length)
+			{
+				maxConsec = consec;
+			}
+		}else
+		{
+			consec = [];
+		}
+	}
+
+	return maxConsec;
+}
+
+function checkCol(i,col,pions)
+{
+	let maxConsec = [];
+	let consec = [];
+	for(let j = col;j <= col + 42;j+=7)
+	{
+		if(pions[j].className == "pion playing j" + current_player)
+		{
+			consec.push(j);
+			if(consec.length > maxConsec.length)
+			{
+				maxConsec = consec;
+			}
+		}else
+		{
+			consec = [];
+		}
+	}
+
+	return maxConsec;
+}
+
+function checkRightLeftDiag(i,col,pions)
+{
+	let maxConsec = [];
+	let consec = [];
+	let lineStart = i - col
+	let lineEnd = lineStart + 6;
+	let distance = -6 * lineEnd + 6 * i;
+	if(i + distance < 0)
+	{
+		distance = -6 * lineStart/ 7;
+	}
+	start = i + distance;
+
+	distance = -6 * lineStart + 6 * i;
+	if(i + distance > 48)
+	{
+		distance = 42 + (-6*lineStart - 42) /7;
+	}
+	end = i + distance;
+	for(let j = start;j <= end;j+=6)
+	{
+		if(pions[j].className == "pion playing j" + current_player)
+		{
+			consec.push(j);
+			if(consec.length > maxConsec.length)
+			{
+				maxConsec = consec;
+			}
+		}else
+		{
+			consec = [];
+		}
+	}
+	return maxConsec;
+}
+
+function checkLeftRightDiag(i,col,pions)
+{
+	let maxConsec = [];
+	let consec = [];
+	let lineStart = i - col
+	let lineEnd = lineStart + 6;
+	let distance = (8 * (i - lineStart));
+	if(distance > lineStart)
+	{
+		distance = lineStart;
+		distance += Math.abs((i-lineStart) - i)/7;
+	}
+	start = i - distance;
+
+	distance = 42 + (-6 * lineEnd + 42)/7;
+	if(i + distance > 48)
+	{
+		distance = (8*lineEnd)/7 - (8 / 7)*i;
+	}
+	end = i + distance;
+	for(let j = start;j <= end;j+=8)
+	{
+		if(pions[j].className == "pion playing j" + current_player)
+		{
+			consec.push(j);
+			if(consec.length > maxConsec.length)
+			{
+				maxConsec = consec;
+			}
+		}else
+		{
+			consec = [];
+		}
+	}
+	return maxConsec;
+}
 
 function touch(id){
 	var pions = document.querySelectorAll('.pion');
@@ -91,112 +208,34 @@ function touch(id){
 	{
 		if(pions[i].className == "pion")
 		{
-			//console.log(current_player);
 			pions[i].className = "pion playing j" + current_player;
 			found = true;
+			let pionsGagnants = [];
 
-			let consec = 0;
-			let maxConsec = 0; 
-			
-			//TO DO faire une foncion check pour chacun qui renvoie la liste des coordonnes du plus grand consectif
-
-			//line
-			let lineStart = i - col;
-			for(let j = lineStart;j < lineStart + 7;j++)
+			if(checkCol(i,col,pions).length >= 4)
 			{
-				if(pions[j].className == "pion playing j" + current_player)
-				{
-					consec++;
-					if(consec > maxConsec)
-					{
-						maxConsec = consec;
-					}
-				}else
-				{
-					consec = 0;
-				}
+				pionsGagnants = pionsGagnants.concat(checkCol(i,col,pions));
 			}
 
-			//col
-			for(let j = col;j <= col + 42;j += 7)
+			if(checkLine(i,col,pions).length >= 4)
 			{
-				if(pions[j].className == "pion playing j" + current_player)
-				{
-					consec++;
-					if(consec > maxConsec)
-					{
-						maxConsec = consec;
-					}
-				}else
-				{
-					consec = 0;
-				}
+				pionsGagnants = pionsGagnants.concat(checkLine(i,col,pions));
 			}
 
-			//diag right-left
-			let distance = (8 * (i - lineStart));
-			if(distance > lineStart)
+			if(checkLeftRightDiag(i,col,pions).length >= 4)
 			{
-				distance = lineStart;
-				distance += Math.abs((i-lineStart) - i)/7;
-			}
-			let diagStart = i - distance;
-			distance = (42 - lineStart) +((i + (42 - lineStart)) - i)/7;
-			let lineEnd = lineStart + 6;
-			if(i + distance > 48)
-			{
-				distance = lineEnd - i + (lineEnd - i) * 7;
-			}
-			let diagEnd = i + distance;
-			for(let j = diagStart;j <= diagEnd;j++)
-			{
-				if(pions[j].className == "pion playing j" + current_player)
-				{
-					consec++;
-					if(consec > maxConsec)
-					{
-						maxConsec = consec;
-					}
-				}else
-				{
-					consec = 0;
-				}
-				j += 7;
-			}
-			
-			//diag left-right
-			distance = lineEnd - i - (lineEnd - i) * 7;
-			if(i + distance < 0)
-			{
-				distance = -lineStart + lineStart / 7;
-			}
-			diagStart = i + distance;
-
-			distance = lineStart - i - (lineStart - i) * 7;
-			if(i + distance > 48)
-			{
-				distance = 42 - lineStart - (42 - lineStart)/7;
-			}
-			diagEnd = i + distance;
-			for(let j = diagStart;j <= diagEnd;j--)
-			{
-				if(pions[j].className == "pion playing j" + current_player)
-				{
-					consec++;
-					if(consec > maxConsec)
-					{
-						maxConsec = consec;
-					}
-				}else
-				{
-					consec = 0;
-				}
-				j += 7;
+				pionsGagnants = pionsGagnants.concat(checkLeftRightDiag(i,col,pions));
 			}
 
-			if(maxConsec >= 4)
+			if(checkRightLeftDiag(i,col,pions).length >= 4)
 			{
-				console.log("Win");
+				pionsGagnants = pionsGagnants.concat(checkRightLeftDiag(i,col,pions));
+			}
+
+			if(pionsGagnants.length > 0)
+			{
+				win(pions,pionsGagnants);
+				return;
 			}
 		}
 		i -= 7;
@@ -207,14 +246,30 @@ function touch(id){
 		current_player = 2;
 		var name = document.getElementById("j2-name").textContent;
 		document.getElementById("player-name").textContent = name;
-		//j1.logo.classList.toggle("fas");
-		//j1.logo.classList.toggle("far");
 	}else
 	{
 		current_player = 1;
 		var name = document.getElementById("j1-name").textContent;
 		document.getElementById("player-name").textContent = name;
-		//j2.logo.classList.toggle("fas");
-		//j2.logo.classList.toggle("far");
+	}
+
+	j1.logo.classList.toggle("fas");
+	j1.logo.classList.toggle("far");
+	j2.logo.classList.toggle("fas");
+	j2.logo.classList.toggle("far");
+}
+
+function win(pions,pionsGagnants)
+{
+	pions.forEach(pion => {pion.setAttribute("onclick","");
+	});
+	let nameId = "j" + current_player + "-name";
+	let name = document.getElementById(nameId).textContent;
+	document.getElementById("info").innerHTML = name + " wins the game <br> Reload to restart";
+	document.getElementById("plateau").style.width = "400px";
+	document.getElementById("plateau").style.height = "420px";
+	for(let i of pionsGagnants)
+	{
+		document.getElementById(i).style.border = "4px solid black";
 	}
 }
