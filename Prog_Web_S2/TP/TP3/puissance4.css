@@ -160,6 +160,18 @@ i.j2{
 	border: none;
 }
 
+.win
+{
+	border: 4px solid #000;
+}
+
+.win:hover
+{
+	width: 20px;
+	height: 20px;
+	border: 4px solid #000;
+}
+
 .info{
 	display: flex;
 }

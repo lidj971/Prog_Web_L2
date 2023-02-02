@@ -270,6 +270,6 @@ function win(pions,pionsGagnants)
 	document.getElementById("plateau").style.height = "420px";
 	for(let i of pionsGagnants)
 	{
-		document.getElementById(i).style.border = "4px solid black";
+		document.getElementById(i).classList.add("win");
 	}
 }
