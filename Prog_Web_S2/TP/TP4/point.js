@@ -8,7 +8,11 @@ point.life = 100;
 point.etat = "";
 point.x = 5;
 point.y = 30;
+point.obj = document.querySelector(".point");
+point.pos = point.obj.getBoundingClientRect();
 
+
+var groundLevel = document.querySelector("#ground").getBoundingClientRect().y;
 var vitesse = 1;
 var gravity = 1;
 // A compléter..
@@ -41,14 +45,22 @@ function move(evt) {
 function checkPosition() {
 	// A compléter..
 	/* Verifier la position */
-	document.getElementsByClassName("point")[0].style.left = point.x + "%";
-	document.getElementsByClassName("point")[0].style.bottom = point.y + "%";
+	point.obj.style.left = point.x + "%";
+	point.obj.style.bottom = point.y + "%";
 	/* Changer d'etat class .fire ou .water */
 	let fire = document.querySelector("#braze").getBoundingClientRect();
-	let pos = document.querySelector(".point").getBoundingClientRect();
-	if(pos.x >= fire.x + 70 && pos.x <= fire.x+fire.width-100)
+	let water = document.querySelector("#lake").getBoundingClientRect();
+	if((point.pos.x >= fire.x + 70 && point.pos.x <= fire.x+fire.width-100) && (point.pos.x <= fire.y))
 	{
-		console.log("fire");
+		point.obj.className = "point fire";
+	}
+	else if(point.pos.x >= water.x && point.pos.x <= water.x+water.width)
+	{
+		point.obj.className = "point water";
+		groundLevel = water.y - water.height;
+	}else
+	{
+		point.obj.className = "point";
 	}
 	/* Perdre de la vie */
 }
@@ -56,14 +68,16 @@ function checkPosition() {
 function gravite() {
 	// A compléter.. USAGE OBLIGATOIRE DU TRY-CATCH
 	/* Garder le point est au sol */
-	point.y -= gravity;
-	try
-	{
-		
-	}
-	catch(err)
-	{
+	let ground = document.querySelector("#ground").getBoundingClientRect();
 
+	
+	try {
+		if(point.pos.y > ground.x)
+		{
+			point.y -= gravity;
+		}
+	} catch (error) {
+		
 	}
 	checkPosition();
 }
