@@ -4,43 +4,82 @@
 
 //Variables globales
 var point = new Object();
-point.life = 100;
+point.life = 200;
 point.etat = "";
 point.x = 5;
 point.y = 30;
 point.obj = document.querySelector(".point");
-point.pos = point.obj.getBoundingClientRect();
+point.rect = point.obj.getBoundingClientRect();
 
-
-var groundLevel = document.querySelector("#ground").getBoundingClientRect().y;
+var ground;
+var groundLevel;
 var vitesse = 1;
 var gravity = 1;
-// A compléter..
-/* Initialiser la position du point */
 
+var fire = new Object();
+fire.rect;
+var water = new Object();
+water.obj = document.querySelector("#lake");
+water.rect;
+
+var inWater = false;
+
+
+
+
+/* Initialiser la position du point */
+checkPosition();
+
+var g=setInterval("gravite()",40);
+var j = null;
 //Fonctions
 function move(evt) {
-	console.log(evt.key);
 	switch (evt.keyCode){
 		case 113:
-			console.log('left');
 			// A compléter..
 			/* Déplacer le point */
-			point.x -= vitesse;
+			if(point.x > 0)
+			{
+				if(inWater)
+				{
+					if(point.x > 70)
+					{
+						point.x -= vitesse;
+					}else
+					{
+						point.x = point.x;
+					}
+				}else
+				{
+					point.x -= vitesse;
+				}
+			}
 			/* Mettre à jour la position du point */
 			checkPosition();
 			break;
 		case 100:
-			console.log('right');
 			// A compléter..
 			/* Déplacer le point */
-			point.x += vitesse;
+			if(point.x < 100-vitesse)
+			{
+				point.x += vitesse;
+			}
 			/* Mettre à jour la position du point */
 			checkPosition();
 			break;
+		case 32:
+			if(j == null && point.y == groundLevel)
+			{
+				j = setInterval("jump()",5);
+			}
+			
 	}
 
 }
+
+var w = null;
+var f = null;
+var regen = setInterval(regenLife,500);
 
 function checkPosition() {
 	// A compléter..
@@ -48,45 +87,96 @@ function checkPosition() {
 	point.obj.style.left = point.x + "%";
 	point.obj.style.bottom = point.y + "%";
 	/* Changer d'etat class .fire ou .water */
-	let fire = document.querySelector("#braze").getBoundingClientRect();
-	let water = document.querySelector("#lake").getBoundingClientRect();
-	if((point.pos.x >= fire.x + 70 && point.pos.x <= fire.x+fire.width-100) && (point.pos.x <= fire.y))
+	//let fire = document.querySelector("#braze").getBoundingClientRect();
+	//let water = document.querySelector("#lake").getBoundingClientRect();
+	point.rect = point.obj.getBoundingClientRect();
+	fire.rect = document.querySelector("#braze").getBoundingClientRect();
+	water.rect = document.querySelector("#lake").getBoundingClientRect();
+	if(point.rect.right >= fire.rect.left + 110 && point.rect.right <= fire.rect.right - 70 && point.y < 43)
 	{
 		point.obj.className = "point fire";
-	}
-	else if(point.pos.x >= water.x && point.pos.x <= water.x+water.width)
+		if(f == null)
+		{
+			f=setInterval(loseLife,500);
+		}
+		groundLevel = 30;
+		inWater = false;
+		clearInterval(w);
+		w = null;
+	}else if(point.rect.left >= water.rect.left)
 	{
-		point.obj.className = "point water";
-		groundLevel = water.y - water.height;
-	}else
+		groundLevel = 10;
+		if(point.y < 30)
+		{
+			inWater = true;
+			point.obj.className = "point water";
+			if(w == null)
+			{
+				w=setInterval(loseLife,1000);
+			}
+		}else
+		{
+			inWater = false;
+			point.obj.className = "point";
+			clearInterval(w);
+			w = null;
+		}
+		clearInterval(f);
+		f = null;
+	}
+	else
 	{
 		point.obj.className = "point";
+		groundLevel = 30;
+		inWater = false;
+		clearInterval(w);
+		clearInterval(f);
+		w = null;
+		f = null;
 	}
 	/* Perdre de la vie */
+	checkLife();
 }
 
 function gravite() {
 	// A compléter.. USAGE OBLIGATOIRE DU TRY-CATCH
 	/* Garder le point est au sol */
-	let ground = document.querySelector("#ground").getBoundingClientRect();
-
-	
-	try {
-		if(point.pos.y > ground.x)
-		{
-			point.y -= gravity;
-		}
-	} catch (error) {
-		
+	if(point.y > groundLevel)
+	{
+		point.y -= gravity;
 	}
+	
 	checkPosition();
 }
-//var t=setInterval("gravite()",500);
+
 
 function loseLife() {
-	// A compléter..
-	/* Perdre de la vie toute les 0.5s dans le feux */
-	/* Perdre de la vie toute les 1s dans l'eau */
+	if(point.life > 0)
+	{
+		point.life -= 10;
+	}
+	checkLife();
+}
+
+function regenLife() {
+	if(point.life < 195 && point.obj.className == "point")
+	{
+		point.life += 10;
+	}
+}
+
+function checkLife()
+{
+	var lifeBar = document.getElementById("life-stat");
+	lifeBar.style.width = point.life + "px";
+
+	if(point.life < 170)
+	{
+		lifeBar.style.backgroundColor = "orange";
+	}else
+	{
+		lifeBar.style.backgroundColor = "green";
+	}
 }
 
 function printJSON() {
@@ -94,9 +184,17 @@ function printJSON() {
 }
 
 /* ALLER PLUS LOIN */
-function jump(argument) {
+function jump() {
 	// A compléter..
 	/* Faire un saut de 100 px */
+	if(point.y < groundLevel + 30)
+	{
+		point.y += 1;
+	}else
+	{
+		clearInterval(j);
+		j = null;
+	}
 }
 
 window.focus();
