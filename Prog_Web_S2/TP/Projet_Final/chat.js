@@ -3,8 +3,13 @@ var pg_contacts = document.getElementById("pg_contacts");
 var pg_inv = document.getElementById("pg_inv");
 var pg_chat = document.getElementById("pg_chat");
 var currentPage;
-var identifiant = "a6fd037f9ccd8ca580083af9f96f29c72a459f34f2ed12a18a66a06996f7a740";
+//var identifiant = "a6fd037f9ccd8ca580083af9f96f29c72a459f34f2ed12a18a66a06996f7a740";
 var connected = false;
+var user = new Object();
+user.identifiant = "";
+user.identite = "";
+user.mail = "";
+
 
 function Init()
 {
@@ -35,20 +40,30 @@ function ShowChat(contact,idRelation)
 {
     SetActive(currentPage,false);
     document.getElementById("chatLabel").textContent = contact;
-    fetch("https://trankillprojets.fr/wal/wal.php?lire&identifiant=" + identifiant + "&relation=" + idRelation)
+    document.getElementById("sendButton").setAttribute("onclick","SendMsg(" + idRelation + ")");
+    fetch("https://trankillprojets.fr/wal/wal.php?lire&identifiant=" + user.identifiant + "&relation=" + idRelation)
     .then(reponse => reponse.json())
     .then(json => {
         if(json.etat.reponse==1)
         {
+            ClearMsg();
             let messages = json.messages;
             for(let i of messages)
             {
                 let message = document.createElement("div");
+                if(i.identite == user.identite)
+                {
+                    message.className = "user";
+                }else
+                {
+                    message.className = "contact";
+                }
+
+                message.appendChild(document.createTextNode(i.message));
+                message.setAttribute("id","message");
+                pg_chat.appendChild(message);
                 //ajouter les messages
-                contact.appendChild(document.createTextNode(i.identite));
-                contact.appendChild(sup);
-                contact.setAttribute("onclick","ShowChat('" + i.identite + "'," + i.relation + ")");
-                pg_contacts.appendChild(contact);
+                
             }
         }else
         {
@@ -56,6 +71,36 @@ function ShowChat(contact,idRelation)
         }
     }).catch(erreur => console.log(erreur));
     SetActive(pg_chat,true);
+    currentPage = pg_chat;
+}
+
+function ClearMsg()
+{
+    document.querySelectorAll("#message").forEach(contact => contact.remove());
+}
+
+function SendMsg(idRelation)
+{
+    msg = document.getElementById("msgInput");
+    if(msg.value != "")
+    {
+        fetch("https://trankillprojets.fr/wal/wal.php?ecrire&identifiant=" + user.identifiant + "&relation=" + idRelation + "&message=" + msg.value)
+        .then(reponse => reponse.json())
+        .then(json => {
+            if(json.etat.reponse==1)
+            {
+                let message = document.createElement("div");
+                message.className = "user";
+                message.appendChild(document.createTextNode(msg.value));
+                message.setAttribute("id","message");
+                pg_chat.appendChild(message);
+                msg.value = "";
+            }else
+            {
+                console.log("awa");//afficher msg erreur
+            }
+        }).catch(erreur => console.log(erreur));
+    }
 }
 
 function SetActive(element,value)
@@ -72,17 +117,22 @@ function SetActive(element,value)
 function Login()
 {
     var input = document.getElementById("identifiant");
-    console.log(input.value);
     if(input.value != "")
     {
-        identifiant = input.value;
+        user.identifiant = input.value;
+    }else
+    {
+        user.identifiant = input.getAttribute("placeholder");
     }
-    fetch("https://trankillprojets.fr/wal/wal.php?information&identifiant=" + identifiant)
+    fetch("https://trankillprojets.fr/wal/wal.php?information&identifiant=" + user.identifiant)
     .then(reponse => reponse.json())
     .then(json => {
         if(json.etat.reponse==1)
         {
             input.value = "";
+            user.identite = json.identite;
+            user.mail = json.mail;
+            ClearContacts();
             SetContact();
             Show(pg_contacts);
         }else
@@ -95,18 +145,21 @@ function Login()
 
 function SetContact()
 {
-    fetch("https://trankillprojets.fr/wal/wal.php?relations&identifiant=" + identifiant)
+    fetch("https://trankillprojets.fr/wal/wal.php?relations&identifiant=" + user.identifiant)
     .then(reponse => reponse.json())
     .then(json => {
         for(i of json.relations)
         {
             let contact = document.createElement("div");
+            let name = document.createElement("div");
             let sup = document.createElement("button");
             sup.textContent = "Supprimer";
             sup.setAttribute("onclick","DelContact(" + i.relation + ")");
-            contact.appendChild(document.createTextNode(i.identite));
+            name.appendChild(document.createTextNode(i.identite));
+            name.setAttribute("onclick","ShowChat('" + i.identite + "'," + i.relation + ")");
+            contact.appendChild(name);
             contact.appendChild(sup);
-            contact.setAttribute("onclick","ShowChat('" + i.identite + "'," + i.relation + ")");
+            contact.setAttribute("id","contact");
             pg_contacts.appendChild(contact);
         }
     }).catch(erreur => console.log(erreur));
@@ -114,13 +167,13 @@ function SetContact()
 
 function ClearContacts()
 {
-    pg_contacts.childNodes.forEach(child => pg_contacts.removeChild(child));
+    document.querySelectorAll("#contact").forEach(contact => contact.remove());
 }
 
 function DelContact(idRelation)
 {
     console.log(idRelation);
-    fetch("https://trankillprojets.fr/wal/wal.php?delier&identifiant=" + identifiant + "&relation=" + idRelation)
+    fetch("https://trankillprojets.fr/wal/wal.php?delier&identifiant=" + user.identifiant + "&relation=" + idRelation)
     .then(reponse => reponse.json())
     .then(json => {
         if(json.etat.reponse==1)
@@ -137,7 +190,7 @@ function DelContact(idRelation)
 function Invite()
 {
     var input = document.getElementById("email");
-    fetch("https://trankillprojets.fr/wal/wal.php?lier&identifiant=" + identifiant + "&mail=" + input.value)
+    fetch("https://trankillprojets.fr/wal/wal.php?lier&identifiant=" + user.identifiant + "&mail=" + input.value)
     .then(reponse => reponse.json())
     .then(json => {
         if(json.etat.reponse==1)
