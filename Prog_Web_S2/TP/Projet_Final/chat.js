@@ -9,6 +9,7 @@ var user = new Object();
 user.identifiant = "";
 user.identite = "";
 user.mail = "";
+user.contacts = null;
 
 
 function Init()
@@ -132,7 +133,7 @@ function Login()
             input.value = "";
             user.identite = json.identite;
             user.mail = json.mail;
-            ClearContacts();
+            user.contacts = null;
             SetContact();
             Show(pg_contacts);
         }else
@@ -148,26 +149,37 @@ function SetContact()
     fetch("https://trankillprojets.fr/wal/wal.php?relations&identifiant=" + user.identifiant)
     .then(reponse => reponse.json())
     .then(json => {
-        for(i of json.relations)
+        if(user.contacts == null)
         {
-            let contact = document.createElement("div");
-            let name = document.createElement("div");
-            let sup = document.createElement("button");
-            sup.textContent = "Supprimer";
-            sup.setAttribute("onclick","DelContact(" + i.relation + ")");
-            name.appendChild(document.createTextNode(i.identite));
-            name.setAttribute("onclick","ShowChat('" + i.identite + "'," + i.relation + ")");
-            contact.appendChild(name);
-            contact.appendChild(sup);
-            contact.setAttribute("id","contact");
-            pg_contacts.appendChild(contact);
+            user.contacts = json;
+            ClearContacts(user.contacts.relations);
+        }else if(json.relations.length != user.contacts.relations.length)
+        {
+            user.contacts = json;
+            ClearContacts(user.contacts.relations);
         }
     }).catch(erreur => console.log(erreur));
+    setTimeout(SetContact,2000);
 }
 
-function ClearContacts()
+function ClearContacts(relations)
 {
+    console.log(relations);
     document.querySelectorAll("#contact").forEach(contact => contact.remove());
+    for(i of relations)
+    {
+        let contact = document.createElement("div");
+        let name = document.createElement("div");
+        let sup = document.createElement("button");
+        sup.textContent = "Supprimer";
+        sup.setAttribute("onclick","DelContact(" + i.relation + ")");
+        name.appendChild(document.createTextNode(i.identite));
+        name.setAttribute("onclick","ShowChat('" + i.identite + "'," + i.relation + ")");
+        contact.appendChild(name);
+        contact.appendChild(sup);
+        contact.setAttribute("id","contact");
+        pg_contacts.appendChild(contact);
+    }
 }
 
 function DelContact(idRelation)
@@ -178,7 +190,6 @@ function DelContact(idRelation)
     .then(json => {
         if(json.etat.reponse==1)
         {
-            ClearContacts();
             SetContact();
         }else
         {
@@ -196,7 +207,6 @@ function Invite()
         if(json.etat.reponse==1)
         {
             input.value = "";
-            ClearContacts();
             SetContact();
             Show(pg_contacts);
         }else
