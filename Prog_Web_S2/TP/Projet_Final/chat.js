@@ -90,7 +90,7 @@ function SetContact()
         }
     }).catch(erreur => console.log(erreur));
     SetChats();
-    setTimeout(SetContact,2000);
+    setTimeout(SetContact,4000);
 }
 
 function ClearContacts(relations)
@@ -235,5 +235,5 @@ function SetChats()
         }
         
     }
-    setTimeout(SetChats,1000);
+    setTimeout(SetChats,2000);
 }
