@@ -89,7 +89,6 @@ function SetContact()
             ClearContacts(user.contacts.relations);
         }
     }).catch(erreur => console.log(erreur));
-    SetChats();
     setTimeout(SetContact,4000);
 }
 
@@ -115,7 +114,7 @@ function ClearContacts(relations)
         sup.textContent = "Supprimer";
         sup.setAttribute("onclick","DelContact(" + i.relation + ")");
         name.appendChild(document.createTextNode(i.identite));
-        name.setAttribute("onclick","Show(" + "user.chats[" + chatIndex + "]" +")");
+        name.setAttribute("onclick","{Show(" + "user.chats[" + chatIndex + "]" +");" + "clearInterval(chatT);" + "SetChat(" + i.relation + "," + chatIndex + ")}");
         contact.appendChild(name);
         contact.appendChild(sup);
         contact.setAttribute("id","contact");
@@ -195,6 +194,8 @@ function SendMsg(idRelation,chatIndex)
     }
 }
 
+var chatT;
+
 function SetChat(idRelation,chatIndex)
 {
     let chat = user.chats[chatIndex];
@@ -223,9 +224,12 @@ function SetChat(idRelation,chatIndex)
                 console.log("awa");//afficher msg erreur
             }
         }).catch(erreur => console.log(erreur));
+    chatT = setTimeout("SetChat("+idRelation + "," + chatIndex +")",2000);
 }
 
-function SetChats()
+
+
+/*function SetChats()
 {
     if(user.contacts != null)
     {
@@ -235,5 +239,5 @@ function SetChats()
         }
         
     }
-    setTimeout(SetChats,2000);
-}
+    chatsetTimeout(SetChats,2000);
+}*/
