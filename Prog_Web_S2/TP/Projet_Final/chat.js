@@ -1,15 +1,14 @@
 var pg_co = document.getElementById("pg_connexion");
 var pg_contacts = document.getElementById("pg_contacts");
 var pg_inv = document.getElementById("pg_inv");
-var pg_chat = document.getElementById("pg_chat");
 var currentPage;
-//var identifiant = "a6fd037f9ccd8ca580083af9f96f29c72a459f34f2ed12a18a66a06996f7a740";
 var connected = false;
 var user = new Object();
 user.identifiant = "";
 user.identite = "";
 user.mail = "";
 user.contacts = null;
+user.chats = [];
 
 function SetActive(element,value)
 {
@@ -27,7 +26,6 @@ function Init()
     SetActive(pg_co,true);
     SetActive(pg_contacts,false);
     SetActive(pg_inv,false);
-    SetActive(pg_chat,false);
     currentPage = pg_co;
 }
 
@@ -84,7 +82,6 @@ function SetContact()
         if(user.contacts == null)
         {
             user.contacts = json;
-            
             ClearContacts(user.contacts.relations);
         }else if(json.relations.length != user.contacts.relations.length)
         {
@@ -92,6 +89,7 @@ function SetContact()
             ClearContacts(user.contacts.relations);
         }
     }).catch(erreur => console.log(erreur));
+    SetChats();
     setTimeout(SetContact,2000);
 }
 
@@ -99,17 +97,25 @@ function ClearContacts(relations)
 {
     console.log(relations);
     document.querySelectorAll("#contact").forEach(contact => contact.remove());
+    user.chats = [];
     for(i of relations)
     {
-        let relation = user.contacts.relations.find(a => a.relation == i.relation);
-        relation.messages = [];
+        let chat = document.querySelector("div" + i.relation);
+        let chatIndex = user.chats.length;
+        if(!chat)
+        {
+            chat = CreateChat(i.identite,i.relation,chatIndex);
+            document.body.appendChild(chat);
+            SetActive(chat,false);
+        }
+        user.chats.push(chat);
         let contact = document.createElement("div");
         let name = document.createElement("div");
         let sup = document.createElement("button");
         sup.textContent = "Supprimer";
         sup.setAttribute("onclick","DelContact(" + i.relation + ")");
         name.appendChild(document.createTextNode(i.identite));
-        name.setAttribute("onclick","ShowChat('" + i.identite + "'," + i.relation + ")");
+        name.setAttribute("onclick","Show(" + "user.chats[" + chatIndex + "]" +")");
         contact.appendChild(name);
         contact.appendChild(sup);
         contact.setAttribute("id","contact");
@@ -152,54 +158,26 @@ function Invite()
 }
 
 
-function SetChat(contact,idRelation)
+function CreateChat(identite,idRelation,chatIndex)
 {
-    //SetActive(currentPage,false);
-    document.getElementById("chatLabel").textContent = contact;
-    document.getElementById("sendButton").setAttribute("onclick","SendMsg(" + idRelation + ")");
-    fetch("https://trankillprojets.fr/wal/wal.php?lire&identifiant=" + user.identifiant + "&relation=" + idRelation)
-    .then(reponse => reponse.json())
-    .then(json => {
-        if(json.etat.reponse==1)
-        {
-            user.
-            
-            /*ClearMsg();
-            let messages = json.messages;
-            for(let i of messages)
-            {
-                let message = document.createElement("div");
-                if(i.identite == user.identite)
-                {
-                    message.className = "user";
-                }else
-                {
-                    message.className = "contact";
-                }
-
-                message.appendChild(document.createTextNode(i.message));
-                message.setAttribute("id","message");
-                pg_chat.appendChild(message);
-                //ajouter les messages
-                
-            }*/
-        }else
-        {
-            console.log("awa");//afficher msg erreur
-        }
-    }).catch(erreur => console.log(erreur));
-    SetActive(pg_chat,true);
-    currentPage = pg_chat;
+    let chatPage = document.createElement("div");
+    chatPage.setAttribute("id",idRelation);
+    let label = document.createTextNode(identite);
+    chatPage.appendChild(label);
+    let textArea = document.createElement("textarea");
+    textArea.setAttribute("id","textArea " + idRelation);
+    chatPage.appendChild(textArea);
+    let sendButton = document.createElement("button");
+    sendButton.setAttribute("id","sendButton");
+    sendButton.setAttribute("onclick","SendMsg(" + idRelation + ","+ chatIndex + ")");
+    chatPage.appendChild(sendButton);
+    return chatPage;
 }
 
-function ClearMsg()
-{
-    document.querySelectorAll("#message").forEach(contact => contact.remove());
-}
 
-function SendMsg(idRelation)
+function SendMsg(idRelation,chatIndex)
 {
-    msg = document.getElementById("msgInput");
+    msg = document.getElementById("textArea " + idRelation)
     if(msg.value != "")
     {
         fetch("https://trankillprojets.fr/wal/wal.php?ecrire&identifiant=" + user.identifiant + "&relation=" + idRelation + "&message=" + msg.value)
@@ -207,11 +185,7 @@ function SendMsg(idRelation)
         .then(json => {
             if(json.etat.reponse==1)
             {
-                let message = document.createElement("div");
-                message.className = "user";
-                message.appendChild(document.createTextNode(msg.value));
-                message.setAttribute("id","message");
-                pg_chat.appendChild(message);
+               // SetChat(idRelation,chatIndex);
                 msg.value = "";
             }else
             {
@@ -221,77 +195,45 @@ function SendMsg(idRelation)
     }
 }
 
-
-function SetContact()
+function SetChat(idRelation,chatIndex)
 {
-    fetch("https://trankillprojets.fr/wal/wal.php?relations&identifiant=" + user.identifiant)
-    .then(reponse => reponse.json())
-    .then(json => {
-        if(user.contacts == null)
-        {
-            user.contacts = json;
-            ClearContacts(user.contacts.relations);
-        }else if(json.relations.length != user.contacts.relations.length)
-        {
-            user.contacts = json;
-            ClearContacts(user.contacts.relations);
-        }
-    }).catch(erreur => console.log(erreur));
-    setTimeout(SetContact,2000);
+    let chat = user.chats[chatIndex];
+    fetch("https://trankillprojets.fr/wal/wal.php?lire&identifiant=" + user.identifiant + "&relation=" + idRelation)
+        .then(reponse => reponse.json())
+        .then(json => {
+            if(json.etat.reponse==1)
+            {
+                for(i of json.messages)
+                {
+                    let message = document.createElement("div");
+                    if(user.identite == i.identite)
+                    {
+                        message.className = "user";
+                    }else
+                    {
+                        message.className = "contact";
+                    }
+                    message.appendChild(document.createTextNode(i.message));
+                    message.setAttribute("id","message");
+                    chat.appendChild(message);
+                    console.log(i);
+                }
+            }else
+            {
+                console.log("awa");//afficher msg erreur
+            }
+        }).catch(erreur => console.log(erreur));
 }
 
-function ClearContacts(relations)
+function SetChats()
 {
-    console.log(relations);
-    document.querySelectorAll("#contact").forEach(contact => contact.remove());
-    for(i of relations)
+    if(user.contacts != null)
     {
-        let contact = document.createElement("div");
-        let name = document.createElement("div");
-        let sup = document.createElement("button");
-        sup.textContent = "Supprimer";
-        sup.setAttribute("onclick","DelContact(" + i.relation + ")");
-        name.appendChild(document.createTextNode(i.identite));
-        name.setAttribute("onclick","ShowChat('" + i.identite + "'," + i.relation + ")");
-        contact.appendChild(name);
-        contact.appendChild(sup);
-        contact.setAttribute("id","contact");
-        pg_contacts.appendChild(contact);
+        for(i in user.chats)
+        {
+            SetChat(user.chats[i].getAttribute("id"),i);
+        }
+        
     }
+    setTimeout(SetChats,1000);
 }
-
-function DelContact(idRelation)
-{
-    console.log(idRelation);
-    fetch("https://trankillprojets.fr/wal/wal.php?delier&identifiant=" + user.identifiant + "&relation=" + idRelation)
-    .then(reponse => reponse.json())
-    .then(json => {
-        if(json.etat.reponse==1)
-        {
-            SetContact();
-        }else
-        {
-            console.log("awa");//afficher mail n'existe pas
-        }
-    }).catch(erreur => console.log(erreur));
-}
-
-function Invite()
-{
-    var input = document.getElementById("email");
-    fetch("https://trankillprojets.fr/wal/wal.php?lier&identifiant=" + user.identifiant + "&mail=" + input.value)
-    .then(reponse => reponse.json())
-    .then(json => {
-        if(json.etat.reponse==1)
-        {
-            input.value = "";
-            SetContact();
-            Show(pg_contacts);
-        }else
-        {
-            console.log("awa");//afficher mail n'existe pas
-        }
-    }).catch(erreur => console.log(erreur));
-}
-
-
