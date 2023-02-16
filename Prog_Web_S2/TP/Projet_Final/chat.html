@@ -6,16 +6,19 @@
     <title>Chat</title>
 </head>
 <body onload="Init()">
-    <button name="connexion" onclick="{Show(pg_co);A()}">Se connecter</button>
-    <button name="contact" onclick="Show(pg_contacts)">Contacts</button>
-    <button name="inviter" onclick="Show(pg_inv)">Inviter</button>
-    <div id="pg_connexion">
-        <label for="identifiant">Identifiant </label>
-            <input type="text" id="identifiant" placeholder="a6fd037f9ccd8ca580083af9f96f29c72a459f34f2ed12a18a66a06996f7a740">
+    <nav>
+        <div name="connexion" onclick="Show(pg_co)">Se connecter</div>
+        <div name="contact" onclick="Show(pg_contacts)">Contacts</div>
+        <div name="inviter" onclick="Show(pg_inv)">Inviter</div>
+    </nav>
+    
+    <div id="pg_connexion" class="centered">
+        <label for="identifiant">Identifiant </label><br>
+            <input type="text" id="identifiant" placeholder="a6fd037f9ccd8ca580083af9f96f29c72a459f34f2ed12a18a66a06996f7a740"><br>
         <button onclick="Login()">S'identifier</button>
     </div>
     <div id="pg_contacts"></div>
-    <div id="pg_inv">
+    <div id="pg_inv" class="centered">
         <label for="email">Mail </label>
         <input type="mail" id="email" placeholder="example@gmail.com">
         <button onclick="Invite()">Inviter</button>

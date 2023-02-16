@@ -7,3 +7,61 @@
 {
     background-color: grey;
 }
+
+nav
+{
+	height:3em;
+	margin: -10px;
+	display:flex;
+	flex-direction:row;
+	/* A donner au etudiants*/
+    background: green; /* Old browsers */
+    /*background: linear-gradient(to top, #000000 0%, #222222 50%, #3c3c3c 51%, #393939 78%, #888888 100%);*/
+}
+
+nav div {
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	flex:auto;
+    font-size:1.2em;
+    color:white;
+	text-decoration: none;
+  	text-transform: capitalize; 
+  	font-variant: small-caps;
+}
+
+nav div:hover{
+	background-color:white;
+    background:white; /* Old browsers */
+    /*background: linear-gradient(to top, #0b4669 0%, #1275ae 50%, #1794dc 51%, #1691d8 78%, #98d2f4 100%);*/
+	transition:background-color 2s linear;
+	color:black;
+	transition:color 1s linear;
+}
+
+.centered
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.message
+{
+	background-color:#005c4b;
+    color:#FFF;
+    border-radius: 7px;
+    font-size:14px;
+    padding-left : 7px;
+    padding-right : 7px;
+	width:50%;
+}
+
+.selected
+{
+	background-color: white;
+}

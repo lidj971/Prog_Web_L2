@@ -163,10 +163,11 @@ function CreateChat(identite,idRelation,chatIndex)
     chatPage.setAttribute("id",idRelation);
     let label = document.createTextNode(identite);
     chatPage.appendChild(label);
-    let textArea = document.createElement("textarea");
-    textArea.setAttribute("id","textArea " + idRelation);
+    let textArea = document.createElement("input");
+    textArea.setAttribute("id","chatInput " + idRelation);
     chatPage.appendChild(textArea);
     let sendButton = document.createElement("button");
+    sendButton.textContent = "Send";
     sendButton.setAttribute("id","sendButton");
     sendButton.setAttribute("onclick","SendMsg(" + idRelation + ","+ chatIndex + ")");
     chatPage.appendChild(sendButton);
@@ -176,7 +177,7 @@ function CreateChat(identite,idRelation,chatIndex)
 
 function SendMsg(idRelation,chatIndex)
 {
-    msg = document.getElementById("textArea " + idRelation)
+    msg = document.getElementById("chatInput " + idRelation)
     if(msg.value != "")
     {
         fetch("https://trankillprojets.fr/wal/wal.php?ecrire&identifiant=" + user.identifiant + "&relation=" + idRelation + "&message=" + msg.value)
@@ -216,6 +217,7 @@ function SetChat(idRelation,chatIndex)
                     }
                     message.appendChild(document.createTextNode(i.message));
                     message.setAttribute("id","message");
+                    message.className = "message";
                     chat.appendChild(message);
                     console.log(i);
                 }
