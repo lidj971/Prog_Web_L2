@@ -14,7 +14,7 @@ function SetActive(element,value)
 {
     if(value)
     {
-        element.style.display = "block";   
+        element.style.display = "flex";   
     }else
     {
         element.style.display = "none"
@@ -95,8 +95,13 @@ function SetContact()
 function ClearContacts(relations)
 {
     console.log(relations);
-    document.querySelectorAll("#contact").forEach(contact => contact.remove());
+    document.querySelectorAll("#contactButtons").forEach(contact => contact.remove());
+    document.querySelectorAll("#suppButtons").forEach(contact => contact.remove());
     user.chats = [];
+    let contactButtons = document.createElement("div");
+    contactButtons.setAttribute("id","contactButtons");
+    let suppButtons = document.createElement("div");
+    suppButtons.setAttribute("id","suppButtons");
     for(i of relations)
     {
         let chat = document.querySelector("div" + i.relation);
@@ -109,17 +114,19 @@ function ClearContacts(relations)
         }
         user.chats.push(chat);
         let contact = document.createElement("div");
-        let name = document.createElement("div");
         let sup = document.createElement("button");
         sup.textContent = "Supprimer";
+        sup.className = "supp"
         sup.setAttribute("onclick","DelContact(" + i.relation + ")");
-        name.appendChild(document.createTextNode(i.identite));
-        name.setAttribute("onclick","{Show(" + "user.chats[" + chatIndex + "]" +");" + "clearInterval(chatT);" + "SetChat(" + i.relation + "," + chatIndex + ")}");
-        contact.appendChild(name);
-        contact.appendChild(sup);
+        contact.appendChild(document.createTextNode(i.identite));
+        contact.setAttribute("onclick","{Show(" + "user.chats[" + chatIndex + "]" +");" + "clearInterval(chatT);" + "SetChat(" + i.relation + "," + chatIndex + ")}");
+        suppButtons.appendChild(sup);
         contact.setAttribute("id","contact");
-        pg_contacts.appendChild(contact);
+        contact.className = "contact";
+        contactButtons.appendChild(contact);
     }
+    pg_contacts.appendChild(contactButtons);
+    pg_contacts.appendChild(suppButtons);
 }
 
 function DelContact(idRelation)
@@ -159,19 +166,28 @@ function Invite()
 
 function CreateChat(identite,idRelation,chatIndex)
 {
-    let chatPage = document.createElement("div");
-    chatPage.setAttribute("id",idRelation);
-    let label = document.createTextNode(identite);
-    chatPage.appendChild(label);
+    let textBar = document.createElement("div");
+    textBar.setAttribute("id",idRelation);
+    let label = document.createElement("div");
+    label.setAttribute("id","chatLabel");
+    label.appendChild(document.createTextNode(identite));
     let textArea = document.createElement("input");
     textArea.setAttribute("id","chatInput " + idRelation);
-    chatPage.appendChild(textArea);
+    textBar.appendChild(textArea);
     let sendButton = document.createElement("button");
     sendButton.textContent = "Send";
     sendButton.setAttribute("id","sendButton");
     sendButton.setAttribute("onclick","SendMsg(" + idRelation + ","+ chatIndex + ")");
-    chatPage.appendChild(sendButton);
-    return chatPage;
+    textBar.appendChild(sendButton);
+    textBar.className = "msgBar";
+    let chat = document.createElement("div");
+    let msgContainer = document.createElement("div");
+    msgContainer.className = "msgContainer";
+    chat.appendChild(textBar);
+    chat.appendChild(msgContainer);
+    chat.appendChild(label);
+    chat.className = "chat";
+    return chat;
 }
 
 
@@ -199,7 +215,9 @@ var chatT;
 
 function SetChat(idRelation,chatIndex)
 {
-    let chat = user.chats[chatIndex];
+    let chatChildren = user.chats[chatIndex].children;
+    let chat = chatChildren[1];
+    
     fetch("https://trankillprojets.fr/wal/wal.php?lire&identifiant=" + user.identifiant + "&relation=" + idRelation)
         .then(reponse => reponse.json())
         .then(json => {
@@ -208,16 +226,16 @@ function SetChat(idRelation,chatIndex)
                 for(i of json.messages)
                 {
                     let message = document.createElement("div");
-                    if(user.identite == i.identite)
-                    {
-                        message.className = "user";
-                    }else
-                    {
-                        message.className = "contact";
-                    }
                     message.appendChild(document.createTextNode(i.message));
                     message.setAttribute("id","message");
                     message.className = "message";
+                    if(user.identite == i.identite)
+                    {
+                        message.classList.add("user");
+                    }else
+                    {
+                        message.classList.add("nUser");
+                    }
                     chat.appendChild(message);
                     console.log(i);
                 }
