@@ -14,10 +14,18 @@ function SetActive(element,value)
 {
     if(value)
     {
-        element.style.display = "flex";   
+        element.style.display = "flex";
+        if(element.getAttribute("id") != null)
+        {
+            document.querySelector("nav ." + element.getAttribute("id")).classList.add("selected");
+        }
     }else
     {
         element.style.display = "none"
+        if(element.getAttribute("id") != null)
+        {
+            document.querySelector("nav ." + element.getAttribute("id")).classList.remove("selected");
+        } 
     }
 }
 
@@ -35,12 +43,24 @@ function Show(element)
     {
         if(connected)
         {
-            SetActive(currentPage,false);
+            if(element.getAttribute("id") == null)
+            {
+                currentPage.style.display = "none";
+            }else
+            {
+                SetActive(currentPage,false);
+            }
+
+            if(element == pg_co || element == pg_inv)
+            {
+                document.querySelector("nav .pg_contacts").classList.remove("selected");
+            }
+
             SetActive(element,true);
             currentPage = element;
         }else
         {
-            //Afficher Se Connecter
+            alert("Veuillez vous connecter d'abord");
         }
     }
 }
@@ -64,14 +84,15 @@ function Login()
             user.identite = json.identite;
             user.mail = json.mail;
             user.contacts = null;
+            connected = true;
             SetContact();
             Show(pg_contacts);
+            
         }else
         {
-            console.log("awa");//afficher msg erreur
+            alert("identifiant invalide !!!");
         }
     }).catch(erreur => console.log(erreur));
-    connected = true;
 }
 
 function SetContact()
@@ -79,15 +100,22 @@ function SetContact()
     fetch("https://trankillprojets.fr/wal/wal.php?relations&identifiant=" + user.identifiant)
     .then(reponse => reponse.json())
     .then(json => {
-        if(user.contacts == null)
+        if(json.etat.reponse == 1)
         {
-            user.contacts = json;
-            ClearContacts(user.contacts.relations);
-        }else if(json.relations.length != user.contacts.relations.length)
+            if(user.contacts == null)
+            {
+                user.contacts = json;
+                ClearContacts(user.contacts.relations);
+            }else if(json.relations.length != user.contacts.relations.length)
+            {
+                user.contacts = json;
+                ClearContacts(user.contacts.relations);
+            }
+        }else
         {
-            user.contacts = json;
-            ClearContacts(user.contacts.relations);
+            alert("Nous n'avons pas pu acceder a votre liste de contacts");
         }
+        
     }).catch(erreur => console.log(erreur));
     setTimeout(SetContact,4000);
 }
@@ -140,7 +168,7 @@ function DelContact(idRelation)
             SetContact();
         }else
         {
-            console.log("awa");//afficher mail n'existe pas
+            alert("Nous n'avons pas pu supprimer le contact");
         }
     }).catch(erreur => console.log(erreur));
 }
@@ -158,7 +186,7 @@ function Invite()
             Show(pg_contacts);
         }else
         {
-            console.log("awa");//afficher mail n'existe pas
+            alert(input.value + " n'est pas sur Wal");
         }
     }).catch(erreur => console.log(erreur));
 }
@@ -168,9 +196,6 @@ function CreateChat(identite,idRelation,chatIndex)
 {
     let textBar = document.createElement("div");
     textBar.setAttribute("id",idRelation);
-    let label = document.createElement("div");
-    label.setAttribute("id","chatLabel");
-    label.appendChild(document.createTextNode(identite));
     let textArea = document.createElement("input");
     textArea.setAttribute("id","chatInput " + idRelation);
     textBar.appendChild(textArea);
@@ -180,11 +205,14 @@ function CreateChat(identite,idRelation,chatIndex)
     sendButton.setAttribute("onclick","SendMsg(" + idRelation + ","+ chatIndex + ")");
     textBar.appendChild(sendButton);
     textBar.className = "msgBar";
-    let chat = document.createElement("div");
     let msgContainer = document.createElement("div");
     msgContainer.className = "msgContainer";
+    let chat = document.createElement("div");
     chat.appendChild(textBar);
     chat.appendChild(msgContainer);
+    let label = document.createElement("div");
+    label.setAttribute("id","chatLabel");
+    label.appendChild(document.createTextNode(identite));
     chat.appendChild(label);
     chat.className = "chat";
     return chat;
@@ -201,11 +229,10 @@ function SendMsg(idRelation,chatIndex)
         .then(json => {
             if(json.etat.reponse==1)
             {
-               // SetChat(idRelation,chatIndex);
                 msg.value = "";
             }else
             {
-                console.log("awa");//afficher msg erreur
+                alert("Impossible d'envoyer le message");
             }
         }).catch(erreur => console.log(erreur));
     }
@@ -239,25 +266,7 @@ function SetChat(idRelation,chatIndex)
                     chat.appendChild(message);
                     console.log(i);
                 }
-            }else
-            {
-                console.log("awa");//afficher msg erreur
             }
         }).catch(erreur => console.log(erreur));
-    chatT = setTimeout("SetChat("+idRelation + "," + chatIndex +")",2000);
+    chatT = setTimeout("SetChat("+idRelation + "," + chatIndex +")",1000);
 }
-
-
-
-/*function SetChats()
-{
-    if(user.contacts != null)
-    {
-        for(i in user.chats)
-        {
-            SetChat(user.chats[i].getAttribute("id"),i);
-        }
-        
-    }
-    chatsetTimeout(SetChats,2000);
-}*/

@@ -26,6 +26,12 @@ nav div {
   	font-variant: small-caps;
 }
 
+.bar
+{
+    display:flex;
+    flex-direction: row;
+}
+
 nav div:hover{
 	background-color:white;
     background:white;
@@ -50,6 +56,7 @@ label
     font-size:1.2em;
   	text-transform: capitalize; 
   	font-variant: small-caps;
+    margin-bottom: 3%;
 }
 
 #pg_contacts
@@ -237,7 +244,7 @@ button
     border-radius: 30px;
     font-size:20px;
     padding: 30px;
-    margin: 1%;
+    margin: 5px;
     width: 95%;
 }
 
@@ -255,4 +262,6 @@ button
 .selected
 {
 	background-color: white;
+    background:white;
+	color:black;
 }
