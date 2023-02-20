@@ -4,7 +4,6 @@ body
     background-image: url("images/bg.jpg");
 }
 
-
 nav
 {
 	height:3em;
@@ -26,12 +25,6 @@ nav div {
   	font-variant: small-caps;
 }
 
-.bar
-{
-    display:flex;
-    flex-direction: row;
-}
-
 nav div:hover{
 	background-color:white;
     background:white;
@@ -40,13 +33,36 @@ nav div:hover{
 	transition:color 1s linear;
 }
 
-.centered
+input
 {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border-radius: 40px;
+    font-size: 18px;
+}
+
+button
+{
+    color:#444;
+    border:1px solid #CCC;
+    background:green;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.5);
+    cursor:pointer;
+    vertical-align:middle;
+    padding: 10px;
     text-align: center;
+    margin-left: 1%;
+    border-radius: 8px;
+    font-size:1.2em;
+  	text-transform: capitalize; 
+  	font-variant: small-caps;
+    border-radius: 40px;
+}
+
+button:active
+{
+    background-color: white;
+    border:1px solid green;
 }
 
 
@@ -73,11 +89,6 @@ label
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-label
-{
-    font-size: 24px;
 }
 
 #pg_inv
@@ -142,15 +153,22 @@ label
   	font-variant: small-caps;
 }
 
+.sup:active
+{
+    background-color: white;
+    border:1px solid red;
+}
+
 .chat
 {
     width: 100%;
-    height: 90%;
+    height: 88%;
     display: flex;
     flex-direction: column-reverse;
     justify-content: flex-start;
     align-items: center;
     margin: 2% 0;
+    overflow :hidden;
 }
 
 .msgContainer
@@ -158,11 +176,19 @@ label
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
     align-items: center;
-    overflow:scroll;
+    overflow: auto;
+    margin-top: 1%;
 }
+
+.bar
+{
+    display:flex;
+    flex-direction: row;
+}
+
 
 .msgBar
 {
@@ -177,32 +203,6 @@ label
     margin: 8px 0;
     box-sizing: border-box;
     margin-right : 4%;
-    border-radius: 40px;
-}
-
-input
-{
-    padding: 12px 20px;
-    box-sizing: border-box;
-    border-radius: 40px;
-    font-size: 18px;
-}
-
-button
-{
-    color:#444;
-    border:1px solid #CCC;
-    background:green;
-    box-shadow: 0 0 5px -1px rgba(0,0,0,0.5);
-    cursor:pointer;
-    vertical-align:middle;
-    padding: 10px;
-    text-align: center;
-    margin-left: 1%;
-    border-radius: 8px;
-    font-size:1.2em;
-  	text-transform: capitalize; 
-  	font-variant: small-caps;
     border-radius: 40px;
 }
 
@@ -264,4 +264,13 @@ button
 	background-color: white;
     background:white;
 	color:black;
+}
+
+.centered
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 }

@@ -176,6 +176,7 @@ function DelContact(idRelation)
 function Invite()
 {
     var input = document.getElementById("email");
+    if(input.value == "") return;
     fetch("https://trankillprojets.fr/wal/wal.php?lier&identifiant=" + user.identifiant + "&mail=" + input.value)
     .then(reponse => reponse.json())
     .then(json => {
@@ -198,6 +199,7 @@ function CreateChat(identite,idRelation,chatIndex)
     textBar.setAttribute("id",idRelation);
     let textArea = document.createElement("input");
     textArea.setAttribute("id","chatInput " + idRelation);
+    textArea.setAttribute("placeholder","Un message...");
     textBar.appendChild(textArea);
     let sendButton = document.createElement("button");
     sendButton.textContent = "Send";
@@ -263,7 +265,7 @@ function SetChat(idRelation,chatIndex)
                     {
                         message.classList.add("nUser");
                     }
-                    chat.appendChild(message);
+                    chat.prepend(message);
                     console.log(i);
                 }
             }
